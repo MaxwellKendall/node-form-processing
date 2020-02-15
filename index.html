@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Commission Request Form</title>
+</head>
+<script>
+    var sendEmail = (e) => {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            window.alert('done');
+            }
+        };
+        request.open("POST", "http://localhost:3000/send-email", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        var test = {};
+        test.abc = "123";
+        request.send(JSON.stringify(test));
+    }
+</script>
+<body>
+    <!-- <form action="https://adq3a1kj40.execute-api.us-east-1.amazonaws.com/TEST/ckendall-art-commission-request"> -->
+        <!-- <form data-section-type="commission-form" id="commission-request-form" class="commission-request-form" action="/pages/commission-request-confirmation" method="get"> -->
+            <div data-section-type="commission-form" id="commission-request-form" class="commission-request-form" action="/confirmation" method="get" onsubmit="sendEmail()">
+                <div data-section-type="commission-form" class="form-container">
+                <label for="name">Enter your name: </label> <input type="text" name="name" id="name" required="" /></div>
+                <label for="email">Enter your email: </label> <input type="email" name="email" id="email" required="" /> <input id="commission-request-form" type="submit" value="Request my Commission!" />
+            </div>
+</body>
+</html>
