@@ -4,6 +4,9 @@ const memoryStorage = require('multer').memoryStorage();
 const upload = require('multer')({ storage: memoryStorage });
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
+const serverless = require('serverless-http');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const app = express();
 const port = 3000;
@@ -14,6 +17,9 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
+app.use(cors());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 AWS.config.update({ region: 'us-east-1' });
 
@@ -28,17 +34,26 @@ app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, "./index.html"));
 });
 
-app.post('/send-email', upload.single('file'), (req, res) => {
+// const decodeBase64String = (str) => {
+//     return new Promise(resolve, reject) => {
+//         const buf = new Buffer.from(str, 'base64');
+
+
+//     });
+// };
+
+app.post('/send-email', (req, res) => {
+    console.log(req.body.attachment.content);
     const {
         name,
         preferredContact,
         phone,
         email,
         canvas,
-        details
+        details,
+        attachment
     } = req.body;
 
-    const attachment = req.file;
     // send some mail
     transporter.sendMail(
         {
@@ -53,21 +68,23 @@ app.post('/send-email', upload.single('file'), (req, res) => {
                 <h2>Canvas Size: ${canvas}</h2>
                 <p>Additional Details: ${details}</p>
             `,
-            attachments: [{
-                filename: attachment.originalname,
-                contentTransferEncoding: 'base64',
-                content: attachment.buffer
+            attachments: [{   // encoded string as an attachment
+                filename: attachment.name,
+                contentType: attachment.type,
+                content: attachment.content.split("base64,")[1],
+                encoding: 'base64'
             }]
         },
         (err, info) => {
             console.log("err", err, info);
             // console.log(info.envelope);
             // console.log(info.messageId);
+            res.send(JSON.stringify({ info, error: err }));
         }
     );
 
-    res.send('fun timez');
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+// module.exports.handler = serverless(app);
 

@@ -1,0 +1,25 @@
+org: maxwellnkendall
+app: ckendall-commission-request-app
+service: ckendall-commission-request
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: TEST
+  region: us-east-1
+  memorySize: 128
+functions:
+  index:
+    handler: index.handler
+    events: 
+      - http: 
+          path: /
+          method: ANY
+          cors: true
+  email:
+    handler: index.handler
+    events: 
+      - http: 
+          path: /send-email
+          method: POST
+          cors: true
+

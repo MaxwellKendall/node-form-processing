@@ -9,10 +9,11 @@
 <body>
     <form id="my-form" data-section-type="commission-form" id="commission-request-form" class="commission-request-form" onsubmit="return false">
         <div data-section-type="commission-form" class="form-container">
-        <label for="name">Enter your name: </label><input type="text" name="name" id="name" required>
+        <label for="name">Enter your name: </label>
+        <input type="text" name="name" id="name" required>
         <fieldset>
             <label for="preferredContact">Enter your preferred method of contact: </label>
-            <select name="preferredContact">
+            <select id="preferredContact" name="preferredContact">
                 <option value="email">Email</option>
                 <option value="phone">Phone</option>
             </select>
@@ -20,7 +21,7 @@
             <label for="email">Email Address</label><input type="email" name="email" id="email">
         </fieldset>
         <label for="canvas">Select your Canvas Size: </label>
-            <select name="canvas">
+            <select id="canvas" name="canvas">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -36,21 +37,48 @@
     </form>
 </body>
 <script>
+    var getFileAsBase64String = (file) => {
+        return new Promise((resolve, reject) => {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+            reader.onerror = () => {
+                reject("REJECTEDD!!!!");
+            };
+        });
+    }
     var handleSubmit = () => {
-        var form = document.getElementById('my-form');
-        var data = new FormData(form);
-        // window.fetch('http://localhost:3000/send-email', {
-        window.fetch('https://adq3a1kj40.execute-api.us-east-1.amazonaws.com/TEST/ckendall-art-commission-request', {
-            method: 'POST',
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
-            body: data
+        return new Promise((resolve, reject) => {
+            var form = document.getElementById('my-form');
+            var uploadedFile = document.getElementById('file').files[0];
+            getFileAsBase64String(uploadedFile)
+                .then((file) => {
+                    console.log("File", file);
+                    return window.fetch('http://localhost:3000/send-email', {
+                        method: 'POST',
+                        redirect: 'follow',
+                        referrerPolicy: 'no-referrer',
+                        headers: { 'Content-Type': 'application/json '},
+                        body: JSON.stringify({
+                            name: document.getElementById('name').value,
+                            preferredContact: document.getElementById('preferredContact').value,
+                            phone: document.getElementById('phone').value,
+                            email: document.getElementById('email').value,
+                            canvas: document.getElementById('canvas').value,
+                            attachment: { content: file, name: uploadedFile.name, type: uploadedFile.type },
+                            details: document.getElementById('details').value
+                        })
+                    })
+                })
+                .then((data) => {
+                    console.log("data!!", data.body);
+                    resolve(data.body);
+                })
+                .catch((e) => console.log('error!!!', e));
         })
-        .then((data) => {
-            console.log("data!!", data.body);
-        })
-        .catch((e) => console.log('error!!!', e));
-        return false;
+    // window.fetch('http://localhost:3000/send-email',
     };
     document.getElementById('commission-request-form').addEventListener('click', handleSubmit);
 </script>
