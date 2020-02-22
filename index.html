@@ -39,15 +39,17 @@
     var handleSubmit = () => {
         var form = document.getElementById('my-form');
         var data = new FormData(form);
-        window.fetch('http://localhost:3000/send-email', {
+        // window.fetch('http://localhost:3000/send-email', {
+        window.fetch('https://adq3a1kj40.execute-api.us-east-1.amazonaws.com/TEST/ckendall-art-commission-request', {
             method: 'POST',
             redirect: 'follow',
             referrerPolicy: 'no-referrer',
             body: data
         })
-        .then(() => {
-
-        });
+        .then((data) => {
+            console.log("data!!", data.body);
+        })
+        .catch((e) => console.log('error!!!', e));
         return false;
     };
     document.getElementById('commission-request-form').addEventListener('click', handleSubmit);
