@@ -34,14 +34,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, "./index.html"));
 });
 
-// const decodeBase64String = (str) => {
-//     return new Promise(resolve, reject) => {
-//         const buf = new Buffer.from(str, 'base64');
-
-
-//     });
-// };
-
 app.post('/send-email', (req, res) => {
     console.log(req.body.attachment.content);
     const {
