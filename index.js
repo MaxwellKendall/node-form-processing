@@ -1,10 +1,7 @@
 const path = require('path');
 const express = require('express');
-const memoryStorage = require('multer').memoryStorage();
-const upload = require('multer')({ storage: memoryStorage });
 const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
-const serverless = require('serverless-http');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -35,7 +32,6 @@ app.get('/', (req, res) => {
 });
 
 app.post('/send-email', (req, res) => {
-    console.log(req.body.attachment.content);
     const {
         name,
         preferredContact,
@@ -77,6 +73,5 @@ app.post('/send-email', (req, res) => {
 
 })
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-// module.exports.handler = serverless(app);
-
+// app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+module.exports.handler = serverless(app);
