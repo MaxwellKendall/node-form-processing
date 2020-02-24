@@ -4,6 +4,7 @@ const AWS = require('aws-sdk');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+var serverless = require('serverless-http');
 
 const app = express();
 const port = 3000;
@@ -65,8 +66,6 @@ app.post('/send-email', (req, res) => {
         },
         (err, info) => {
             console.log("err", err, info);
-            // console.log(info.envelope);
-            // console.log(info.messageId);
             res.send(JSON.stringify({ info, error: err }));
         }
     );
