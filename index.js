@@ -66,10 +66,8 @@ app.post('/send-email', (req, res) => {
         },
         (err, info) => {
             console.log("err", err, info);
-            res.send(JSON.stringify({ info, error: err }));
-        }
-    );
-
+        });
+        res.send(JSON.stringify({ info, error: err }));
 })
 
 // app.listen(port, () => console.log(`Example app listening on port ${port}!`))
