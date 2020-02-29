@@ -73,5 +73,5 @@ app.post('/send-email', (req, res) => {
         });
 })
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-// module.exports.handler = serverless(app);
+// app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+module.exports.handler = serverless(app);
