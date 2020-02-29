@@ -9,35 +9,38 @@
 <body>
     <form id="my-form" data-section-type="commission-form" id="commission-request-form" class="commission-request-form" onsubmit="return false">
         <div data-section-type="commission-form" class="form-container">
-        <label for="name">Enter your name: </label>
-        <input type="text" name="name" id="name" required>
-        <fieldset>
+            <fieldset>
+            <label for="name">Enter your name: </label>
+            <input type="text" name="name" id="name" required>
+            <label for="phone">Phone Number</label><input type="tel" name="phone" id="phone">
+            <label for="email">Email Address</label><input type="email" name="email" id="email">
             <label for="preferredContact">Enter your preferred method of contact: </label>
             <select id="preferredContact" name="preferredContact">
                 <option value="email">Email</option>
                 <option value="phone">Phone</option>
             </select>
-            <label for="phone">Phone Number</label><input type="tel" name="phone" id="phone">
-            <label for="email">Email Address</label><input type="email" name="email" id="email">
         </fieldset>
-        <label for="canvas">Select your Canvas Size: </label>
-            <select id="canvas" name="canvas">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-            </select>
-        <label for="file">Provide an example image or painting that you would like for your commission</label>
-        <input type="file" name="file" id="file">
-        <label for="details">Any other details</label>
-        <textarea name="details" id="details" cols="30" rows="10"></textarea>
+        <fieldset>
+            <label for="canvas">Select your Canvas Size: </label>
+                <select id="canvas" name="canvas">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            <label for="file">Provide an example image or painting that you would like for your commission</label>
+            <input type="file" name="file" id="file">
+            <label for="details">Any other details</label>
+            <textarea name="details" id="details" cols="30" rows="10"></textarea>
+        </fieldset>
         <button id="commission-request-form" type="submit">Request my Commission!</button>
     </form>
 </body>
 <script>
-    var url = 'https://emrik8wwe3.execute-api.us-east-1.amazonaws.com/TEST/send-email';
+    // var url = 'https://emrik8wwe3.execute-api.us-east-1.amazonaws.com/TEST/send-email';
+        var url = 'http://localhost:3000/send-email';
     var getFileAsBase64String = (file) => {
         return new Promise((resolve, reject) => {
             var reader = new FileReader();
@@ -60,6 +63,7 @@
                     return window.fetch(url, {
                         method: 'POST',
                         redirect: 'follow',
+                        // mode: 'no-cors',
                         referrerPolicy: 'no-referrer',
                         headers: { 'Content-Type': 'application/json '},
                         body: JSON.stringify({

@@ -43,6 +43,8 @@ app.post('/send-email', (req, res) => {
         attachment
     } = req.body;
 
+    var orderId = Date.now();
+    console.log("body", req);
     // send some mail
     transporter.sendMail(
         {
@@ -56,6 +58,7 @@ app.post('/send-email', (req, res) => {
                 <h2>Email: ${email}</h2>
                 <h2>Canvas Size: ${canvas}</h2>
                 <p>Additional Details: ${details}</p>
+                <p>Order ID: ${orderId}</p>
             `,
             attachments: [{   // encoded string as an attachment
                 filename: attachment.name,
@@ -64,11 +67,11 @@ app.post('/send-email', (req, res) => {
                 encoding: 'base64'
             }]
         },
-        (err, info) => {
-            console.log("err", err, info);
+        (error, info) => {
+            console.log("err", error, info);
+            res.send(JSON.stringify({ error, info, orderId }));
         });
-        res.send(JSON.stringify({ info, error: err }));
 })
 
-// app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-module.exports.handler = serverless(app);
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+// module.exports.handler = serverless(app);
