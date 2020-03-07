@@ -7,13 +7,13 @@
     <title>Commission Request Form</title>
 </head>
 <body>
-    <form id="my-form" data-section-type="commission-form" id="commission-request-form" class="commission-request-form" onsubmit="return false">
+    <form id="my-form" data-section-type="commission-form" action="/pages/commission-request-confirmation" method="GET" id="commission-request-form" class="commission-request-form">
         <div data-section-type="commission-form" class="form-container">
             <fieldset>
             <label for="name">Enter your name: </label>
             <input type="text" name="name" id="name" required>
-            <label for="phone">Phone Number</label><input type="tel" name="phone" id="phone">
-            <label for="email">Email Address</label><input type="email" name="email" id="email">
+            <label for="phone">Phone Number:</label><input type="tel" name="phone" id="phone">
+            <label for="email">Email Address:</label><input type="email" name="email" id="email">
             <label for="preferredContact">Enter your preferred method of contact: </label>
             <select id="preferredContact" name="preferredContact">
                 <option value="email">Email</option>
@@ -23,19 +23,29 @@
         <fieldset>
             <label for="canvas">Select your Canvas Size: </label>
                 <select id="canvas" name="canvas">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
+                    <option value="12x12 canvas">12x12 canvas</option>
+                    <option value="11x14 canvas">11x14 canvas</option>
+                    <option value="12x16 canvas">12x16 canvas</option>
+                    <option value="16x16 canvas">16x16 canvas</option>
+                    <option value="14x18 canvas">14x18 canvas</option>
+                    <option value="20x20 canvas">20x20 canvas</option>
+                    <option value="18x24 canvas">18x24 canvas</option>
+                    <option value="24x24 canvas">24x24 canvas</option>
+                    <option value="30x24 canvas">30x24 canvas</option>
+                    <option value="36x36 canvas">36x36 canvas</option>
+                    <option value="30x40 canvas">30x40 canvas</option>
+                    <option value="24x36 canvas">24x36 canvas</option>
+                    <option value="12x16 paper">12x16 paper</option>
+                    <option value="Other">Other</option>
                 </select>
-            <label for="file">Provide an example image or painting that you would like for your commission</label>
+            <label for="file">Provide an example image or painting that you would like for your commission.</label>
             <input type="file" name="file" id="file">
-            <label for="details">Any other details</label>
+            <label for="details">Please provide more detail for your request:</label>
             <textarea name="details" id="details" cols="30" rows="10"></textarea>
         </fieldset>
-        <button id="commission-request-form" type="submit">Request my Commission!</button>
+        <fieldset>
+            <button id="commission-request-form" type="submit">SUBMIT</button>
+        </fieldset>
     </form>
 </body>
 <script>
