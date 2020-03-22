@@ -7,7 +7,7 @@
     <title>Commission Request Form</title>
 </head>
 <body>
-    <form id="my-form" data-section-type="commission-form" action="/pages/commission-request-confirmation" method="GET" id="commission-request-form" class="commission-request-form">
+    <form id="my-form" data-section-type="commission-form" id="commission-request-form" class="commission-request-form">
         <div data-section-type="commission-form" class="form-container">
             <fieldset>
             <label for="name">Enter your name: </label>
@@ -52,6 +52,7 @@
     // var url = 'https://emrik8wwe3.execute-api.us-east-1.amazonaws.com/TEST/send-email';
         var url = 'http://localhost:3000/send-email';
     var getFileAsBase64String = (file) => {
+        if (!file) return Promise.resolve(null);
         return new Promise((resolve, reject) => {
             var reader = new FileReader();
             reader.readAsDataURL(file);
@@ -63,13 +64,15 @@
             };
         });
     }
-    var handleSubmit = () => {
+    var handleSubmit = (e) => {
+        e.preventDefault();
         return new Promise((resolve, reject) => {
             var form = document.getElementById('my-form');
-            var uploadedFile = document.getElementById('file').files[0];
+            var uploadedFile = document.getElementById('file')
+                ? document.getElementById('file').files[0]
+                : null;
             getFileAsBase64String(uploadedFile)
                 .then((file) => {
-                    console.log("File", file);
                     return window.fetch(url, {
                         method: 'POST',
                         redirect: 'follow',
@@ -82,7 +85,15 @@
                             phone: document.getElementById('phone').value,
                             email: document.getElementById('email').value,
                             canvas: document.getElementById('canvas').value,
-                            attachment: { content: file, name: uploadedFile.name, type: uploadedFile.type },
+                            attachment: file
+                                ? {
+                                    content: file,
+                                    name: uploadedFile.name
+                                        .split('')
+                                        .filter((char) => char !== ' ')
+                                        .join(''),
+                                    type: uploadedFile.type }
+                                : null,
                             details: document.getElementById('details').value
                         })
                     })
