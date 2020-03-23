@@ -22,7 +22,7 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 
 AWS.config.update({ region: 'us-east-1' });
-AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile: 'serverless' })
+// AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile: 'serverless' })
 
 // create SES emailer
 const emailClient = new AWS.SES({ apiVersion: '2010-12-01' });
@@ -55,18 +55,26 @@ app.post('/send-email', (req, res) => {
     `;
 
     if (attachment) {
-        fs.writeFileSync(`/tmp/${attachment.name}`, attachment.content.split('base64,')[1], { encoding: 'base64' });
-        
-        const file = fs.readFileSync(`/tmp/${attachment.name}`);
         const parsedFileName = attachment.name
+            .split('.')[0]
             .split('')
-            .filter((char) => char !== ' ')
+            .filter((char) => (
+                char !== ' ' &&
+                char !== '/' &&
+                char !== ')' && 
+                char !== '('
+            ))
             .join('');
+        const fileType = attachment.type.split('/')[1];
+        const destination = `${parsedFileName}.${fileType}`;
+        fs.writeFileSync(`/tmp/${destination}`, attachment.content.split('base64,')[1], { encoding: 'base64' });
+        
+        const file = fs.readFileSync(`/tmp/${destination}`);
 
         s3Client.putObject({
             Body: file,
             Bucket: 'ckendallart',
-            Key: parsedFileName,
+            Key: destination,
             // ServerSideEncryption: "AES256", 
             StorageClass: "STANDARD"
         }, (err, data) => {
@@ -77,7 +85,7 @@ app.post('/send-email', (req, res) => {
             }
         });
 
-        html = `${html}<a href=${s3Url}/${parsedFileName}>Link to Picture</a>`;
+        html = `${html}<a href=${s3Url}/${destination}>Link to Picture</a>`;
     }
 
     // send some mail
@@ -93,24 +101,24 @@ app.post('/send-email', (req, res) => {
                }, 
                Message: {
                 Body: {
-                 Html: {
-                  Charset: "UTF-8", 
-                  Data: html
-                 }, 
-                 Text: {
-                  Charset: "UTF-8", 
-                  Data: `Commission request from ${name}, preferred contact is ${preferredContact}, email: ${email}, phone: ${phone}, details: ${details}, canvas size: ${canvas}`
-                 }
-                }, 
+                    Html: {
+                        Charset: "UTF-8", 
+                        Data: html
+                    }, 
+                    Text: {
+                        Charset: "UTF-8", 
+                        Data: `Commission request from ${name}, preferred contact is ${preferredContact}, email: ${email}, phone: ${phone}, details: ${details}, canvas size: ${canvas}`
+                    },
+                },
                 Subject: {
                  Charset: "UTF-8", 
                  Data: `Commission Request from ${name}`
                 }
-               }, 
-               ReplyToAddresses: [
-                   `${email}`
-               ], 
-               Source: "info@ckendallart.com"
+            }, 
+            ReplyToAddresses: [
+                `${email}`
+            ], 
+            Source: "info@ckendallart.com"
         },
         (err, data) => {
             console.log("WUT IS HAPPENING v2");
